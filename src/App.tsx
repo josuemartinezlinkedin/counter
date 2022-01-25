@@ -36,15 +36,11 @@ interface Infos {
 
 
 
-const gettingInData = () => {
-    return axios.get('https://randomuser.me/api')
-        .then(({data}) => {
-            //handle success
-            console.log(data);
-            return data;
-        })
+const gettingInData = (pageNums: number) => {
+    //?page=2 api string for user pages
+    return axios.get(`https://randomuser.me/api?page=${pageNums}`)
+        .then(({data}) => data)
         .catch(err => {
-            //handle error
             console.error(err);
         });
 }
@@ -57,15 +53,25 @@ const getFullName = (infoFromUsers: Infos) =>{
 export default function App(){
 
     const [counter, setCounter] = useState(42);
+    const [nextPageNum, setNextPageNum] = useState(1);
     const [infosFromUsers, setInfosFromUsers] = useState<any>([]);
     const [randomUserJSON, setRadomUserJSON] = useState('');
     
+    const getNextUser = () => {
+       gettingInData(nextPageNum).then((someData) => {
+        setRadomUserJSON(JSON.stringify(someData, null, 2) || 'No data found');
+        if (someData === undefined) return;
+        const newUserInfo = [
+            ...infosFromUsers,
+            ...someData.results,
+        ]
+        setInfosFromUsers(newUserInfo);
+        setNextPageNum(someData.info.page + 1);
+        });  
+    }
 
     useEffect(() => {
-        gettingInData().then((someData) => {
-        setRadomUserJSON(JSON.stringify(someData, null, 2) || 'No data found');
-        setInfosFromUsers(someData.results);
-        }) 
+       getNextUser(nextPageNum); 
     }, []);
 
     return (
@@ -76,7 +82,12 @@ export default function App(){
         </h2>
         <button onClick={()=> {
             setCounter(counter + 1);
-        }}>add one</button>
+        }}>add one
+        </button>
+         <button onClick={()=> {
+            getNextUser();
+        }}>Next User
+        </button>
         {
         infosFromUsers.map((infoFromUsers: Names, idx: number) => (
             <div key={idx}>
