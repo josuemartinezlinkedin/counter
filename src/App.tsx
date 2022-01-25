@@ -1,7 +1,8 @@
 import * as React from 'react';
 import axios from 'axios';
 import "./styles.css";
-import { useEffect, useState } from 'react';
+
+const { useEffect, useState } = React;
 
 /*npm example of how to use axios
 axios.get('/user?ID=12345')
@@ -20,6 +21,15 @@ axios.get('/user?ID=12345')
 API we'll be using: https://randomuser.me/api
 
 */
+interface Names {
+    first: string;
+    last: string;
+    title: string;
+}
+interface Infos {
+    name: Names;
+    pictur: any;
+}
 
 
 
@@ -36,7 +46,7 @@ const gettingInData = () => {
         });
 }
 
-const getFullName = (infoUsers) =>{
+const getFullName = (infoUsers:Infos) =>{
     const {name: {first, last}} = infoUsers;
     return '${first} ${last}';
 }
@@ -44,15 +54,16 @@ const getFullName = (infoUsers) =>{
 export default function App(){
 
     const [counter, setCounter] = useState(42);
+    const [infoFromUsers, setInfoFromUsers] = useState<any>([]);
     const [randomUserJSON, setRadomUserJSON] = useState('');
-    const [infoFromUsers, setInfoFromUsers ] = useState([]);
+    
 
-    React.useEffect(() => {
-        gettingInData().then(someData => {
+    useEffect(() => {
+        gettingInData().then((someData) => {
         setRadomUserJSON(JSON.stringify(someData, null, 2) || 'No data found');
         setInfoFromUsers(someData.results);
         }) 
-    }, [])
+    }, []);
 
     return (
         <div className="App">
@@ -64,7 +75,7 @@ export default function App(){
             setCounter(counter + 1);
         }}>add one</button>
         {
-        infoFromUsers.map((infoFromUsers, idx) => (
+        infoFromUsers.map((infoFromUsers: UsersName, idx: number) => (
             <div key={idx}>
             <p>{getFullName(infoFromUsers)}</p>
             <img></img>
