@@ -81,7 +81,7 @@ export default function App(){
         infosFromUsers.map((infoFromUsers: Names, idx: number) => (
             <div key={idx}>
             <p>{getFullName(infoFromUsers)}</p>
-            <img></img>
+            <img src={infoFromUsers.picture.thumbnail}></img>
             </div>
     ))
         }
