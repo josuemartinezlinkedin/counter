@@ -71,7 +71,7 @@ export default function App(){
     }
 
     useEffect(() => {
-       getNextUser(nextPageNum); 
+       getNextUser(); 
     }, []);
 
     return (
