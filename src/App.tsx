@@ -26,9 +26,12 @@ interface Names {
     last: string;
     title: string;
 }
+interface Pictures {
+    thumbnail: string;
+}
 interface Infos {
     name: Names;
-    pictur: any;
+    picture: Pictures;
 }
 
 
@@ -38,7 +41,7 @@ const gettingInData = () => {
         .then(({data}) => {
             //handle success
             console.log(data);
-            return JSON.stringify(data);
+            return data;
         })
         .catch(err => {
             //handle error
@@ -46,22 +49,22 @@ const gettingInData = () => {
         });
 }
 
-const getFullName = (infoUsers:Infos) =>{
-    const {name: {first, last}} = infoUsers;
-    return '${first} ${last}';
+const getFullName = (infoFromUsers: Infos) =>{
+    const {name: {first, last}} = infoFromUsers;
+    return `${first} ${last}`;
 }
 
 export default function App(){
 
     const [counter, setCounter] = useState(42);
-    const [infoFromUsers, setInfoFromUsers] = useState<any>([]);
+    const [infosFromUsers, setInfosFromUsers] = useState<any>([]);
     const [randomUserJSON, setRadomUserJSON] = useState('');
     
 
     useEffect(() => {
         gettingInData().then((someData) => {
         setRadomUserJSON(JSON.stringify(someData, null, 2) || 'No data found');
-        setInfoFromUsers(someData.results);
+        setInfosFromUsers(someData.results);
         }) 
     }, []);
 
@@ -75,7 +78,7 @@ export default function App(){
             setCounter(counter + 1);
         }}>add one</button>
         {
-        infoFromUsers.map((infoFromUsers: UsersName, idx: number) => (
+        infosFromUsers.map((infoFromUsers: Names, idx: number) => (
             <div key={idx}>
             <p>{getFullName(infoFromUsers)}</p>
             <img></img>
